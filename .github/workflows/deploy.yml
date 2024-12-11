@@ -10,23 +10,21 @@ on:
                     runs-on: ubuntu-latest  # 기본 환경은 우분투로 두고, 도커 이미지를 실행하도록 설정
                           
                           steps:
-                                - name: Checkout code
-                                        uses: actions/checkout@v2
+                                  - name: Checkout code
+                                            uses: actions/checkout@v2
 
-                                              - name: Set up GCP credentials
-                                                      uses: google-github-actions/auth@v0.5.0
-                                                              with:
-                                                                        credentials_json: ${{ secrets.GCP_SA_KEY }}
+                                                    - name: Set up GCP credentials
+                                                              uses: google-github-actions/auth@v0.5.0
+                                                                        with:
+                                                                                    credentials_json: ${{ secrets.GCP_SA_KEY }}
 
-                                                                              - name: Set up kubectl
-                                                                                      uses: google-github-actions/setup-kubectl@v0.2.0
-                                                                                              with:
-                                                                                                        kubeconfig: ${{ secrets.GCP_SA_KEY }}
+                                                                                            - name: Set up kubectl
+                                                                                                      uses: google-github-actions/setup-kubectl@v0.2.0
+                                                                                                                with:
+                                                                                                                            kubeconfig: ${{ secrets.GCP_SA_KEY }}
 
-                                                                                                              - name: Use custom Docker image
-                                                                                                                      uses: docker://thdrudtjssla/brick-blockgame:latest  # 사용자 Docker 이미지 사용
-                                                                                                                              with:
-                                                                                                                                        args: |
-                                                                                                                                                    kubectl apply -f k8s-deployment.yaml
-                                                                                                                                                              kubectl apply -f k8s-service.yaml
+                                                                                                                                    - name: Run custom Docker image with kubectl
+                                                                                                                                              run: |
+                                                                                                                                                          docker run --rm -v $(pwd):/workspace -w /workspace thdrudtjssla/brick-blockgame:latest kubectl apply -f k8s-deployment.yaml
+                                                                                                                                                                    docker run --rm -v $(pwd):/workspace -w /workspace thdrudtjssla/brick-blockgame:latest kubectl apply -f k8s-service.yaml
 
