@@ -1,0 +1,29 @@
+me: Deploy to Kubernetes
+
+on:
+    push:
+          branches:
+                  - main  # main 브랜치에 푸시될 때마다 파이프라인이 실행됩니다.
+
+          jobs:
+              deploy:
+                    runs-on: ubuntu-latest
+
+                          steps:
+                                - name: Check out the repository
+                                        uses: actions/checkout@v3
+
+                                              - name: Set up Google Cloud SDK
+                                                      uses: google-github-actions/setup-gcloud@v3
+                                                              with:
+                                                                        project_id: myweb-9384  # GCP 프로젝트 ID
+                                                                                  credentials: ${{ secrets.GCP_SA_KEY }}  # GitHub Secrets에 저장한 GCP 서비스 계정 키
+
+                                                                                        - name: Get Kubernetes credentials
+                                                                                                run: gcloud container clusters get-credentials mywebtest --region asia-northeast1
+
+                                                                                                      - name: Deploy to Kubernetes
+                                                                                                              run: |
+                                                                                                                        kubectl apply -f k8s-deployment.yaml
+                                                                                                                                kubectl apply -f k8s-service.yaml
+
