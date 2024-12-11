@@ -29,13 +29,13 @@ jobs:
 
     - name: Install gke-gcloud-auth-plugin
       run: |
+        # Install the gke-gcloud-auth-plugin
         curl -sSL https://dl.google.com/cloudsdk/channels/rapid/install_google_cloud_sdk.bash | bash
-        echo "source $(pwd)/google-cloud-sdk/path.bash.inc" >> ~/.bashrc
-        source ~/.bashrc
+        source $HOME/google-cloud-sdk/path.bash.inc  # 구글 클라우드 SDK 경로 로드
 
     - name: Get GCP cluster credentials
       run: |
-        gcloud container clusters get-credentials mywebtest --zone asia-northeast1 --project $GCP_PROJECT_ID  # 클러스터 인증
+        gcloud container clusters get-credentials mywebtest --zone asia-northeast1 --project $GCP_PROJECT_ID  # GKE 클러스터 인증
 
     - name: Deploy to Kubernetes
       run: |
