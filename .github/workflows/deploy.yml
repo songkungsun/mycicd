@@ -16,10 +16,10 @@ jobs:
     - name: Set up GCP credentials
       uses: google-github-actions/auth@v0.5.0
       with:
-        credentials_json: ${{ secrets.GCP_SA_KEY }}
+        credentials_json: ${{ secrets.GCP_SA_KEY }}  # 서비스 계정 JSON 비밀 키 설정
 
     - name: Set GCP project ID
-      run: echo "GCP_PROJECT_ID=myweb-9384" >> $GITHUB_ENV  # 프로젝트 ID 설정
+      run: echo "GCP_PROJECT_ID=myweb-9384" >> $GITHUB_ENV  # GCP 프로젝트 ID 설정
 
     - name: Install kubectl
       run: |
@@ -27,9 +27,12 @@ jobs:
         chmod +x ./kubectl
         sudo mv ./kubectl /usr/local/bin/kubectl
 
-    - name: Run Google Cloud SDK Docker image with kubectl
+    - name: Get GCP cluster credentials
       run: |
-        docker run --rm -v $(pwd):/workspace -w /workspace -e KUBECONFIG=$HOME/.kube/config google/cloud-sdk:slim gcloud container clusters get-credentials mywebtest --zone asia-northeast1 --project $GCP_PROJECT_ID
-        docker run --rm -v $(pwd):/workspace -w /workspace -e KUBECONFIG=$HOME/.kube/config google/cloud-sdk:slim kubectl apply -f k8s-deployment.yaml
-        docker run --rm -v $(pwd):/workspace -w /workspace -e KUBECONFIG=$HOME/.kube/config google/cloud-sdk:slim kubectl apply -f k8s-service.yaml
+        gcloud container clusters get-credentials mywebtest --zone asia-northeast1 --project $GCP_PROJECT_ID  # 클러스터 인증
+
+    - name: Deploy to Kubernetes
+      run: |
+        kubectl apply -f k8s-deployment.yaml
+        kubectl apply -f k8s-service.yaml
 
