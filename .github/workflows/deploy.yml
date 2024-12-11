@@ -19,12 +19,12 @@ jobs:
         credentials_json: ${{ secrets.GCP_SA_KEY }}
 
     - name: Set up kubectl
-      uses: google-github-actions/setup-kubectl@v3
+      uses: google-github-actions/setup-kubectl@v2
       with:
         kubeconfig: ${{ secrets.GCP_SA_KEY }}
 
     - name: Run custom Docker image with kubectl
       run: |
-        docker run --rm -v $(pwd):/workspace -w /workspace thdrudtjssla/brick-blockgame:latest kubectl apply -f k8s-deployment.yaml
-        docker run --rm -v $(pwd):/workspace -w /workspace thdrudtjssla/brick-blockgame:latest kubectl apply -f k8s-service.yaml
+        docker run --rm -v $(pwd):/workspace -w /workspace -e KUBECONFIG=$HOME/.kube/config thdrudtjssla/brick-blockgame:latest kubectl apply -f k8s-deployment.yaml
+        docker run --rm -v $(pwd):/workspace -w /workspace -e KUBECONFIG=$HOME/.kube/config thdrudtjssla/brick-blockgame:latest kubectl apply -f k8s-service.yaml
 
