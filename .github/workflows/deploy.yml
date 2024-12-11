@@ -27,6 +27,12 @@ jobs:
         chmod +x ./kubectl
         sudo mv ./kubectl /usr/local/bin/kubectl
 
+    - name: Install gke-gcloud-auth-plugin
+      run: |
+        curl -sSL https://dl.google.com/cloudsdk/channels/rapid/install_google_cloud_sdk.bash | bash
+        echo "source $(pwd)/google-cloud-sdk/path.bash.inc" >> ~/.bashrc
+        source ~/.bashrc
+
     - name: Get GCP cluster credentials
       run: |
         gcloud container clusters get-credentials mywebtest --zone asia-northeast1 --project $GCP_PROJECT_ID  # 클러스터 인증
