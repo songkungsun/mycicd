@@ -1,13 +1,13 @@
-piVersion: v1
+apiVersion: v1
 kind: Service
 metadata:
-    name: brick-blockgame-service
-    spec:
-        type: LoadBalancer
-            ports:
-                  - protocol: TCP
-                          port: 80
-                                  targetPort: 80
-                                      selector:
-                                            app: brick-blockgame
+  name: brick-blockgame-service
+spec:
+  type: LoadBalancer
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 80
+  selector:
+    app: brick-blockgame
 
