@@ -19,7 +19,7 @@ jobs:
         credentials_json: ${{ secrets.GCP_SA_KEY }}
 
     - name: Set up kubectl
-      uses: google-github-actions/setup-kubectl@v0.2.0
+      uses: google-github-actions/setup-kubectl@v1
       with:
         kubeconfig: ${{ secrets.GCP_SA_KEY }}
 
