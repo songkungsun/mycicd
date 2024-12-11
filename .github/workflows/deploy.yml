@@ -1,29 +1,29 @@
-me: Deploy to Kubernetes
+me: Deploy to GCP Kubernetes
 
 on:
     push:
           branches:
-                  - main  # main 브랜치에 푸시될 때마다 파이프라인이 실행됩니다.
+                  - main
 
           jobs:
               deploy:
                     runs-on: ubuntu-latest
-
                           steps:
-                                - name: Check out the repository
-                                        uses: actions/checkout@v3
+                                - name: Checkout code
+                                        uses: actions/checkout@v2
 
-                                              - name: Set up Google Cloud SDK
-                                                      uses: google-github-actions/setup-gcloud@v3
+                                              - name: Set up GCP credentials
+                                                      uses: google-github-actions/auth@v0.5.0
                                                               with:
-                                                                        project_id: myweb-9384  # GCP 프로젝트 ID
-                                                                                  credentials: ${{ secrets.GCP_SA_KEY }}  # GitHub Secrets에 저장한 GCP 서비스 계정 키
+                                                                        credentials_json: ${{ secrets.GCP_SA_KEY }}
 
-                                                                                        - name: Get Kubernetes credentials
-                                                                                                run: gcloud container clusters get-credentials mywebtest --region asia-northeast1
+                                                                              - name: Set up kubectl
+                                                                                      uses: google-github-actions/setup-kubectl@v0.2.0
+                                                                                              with:
+                                                                                                        kubeconfig: ${{ secrets.GCP_SA_KEY }}
 
-                                                                                                      - name: Deploy to Kubernetes
-                                                                                                              run: |
-                                                                                                                        kubectl apply -f k8s-deployment.yaml
-                                                                                                                                kubectl apply -f k8s-service.yaml
+                                                                                                              - name: Deploy to Kubernetes
+                                                                                                                      run: |
+                                                                                                                                kubectl apply -f k8s-deployment.yaml
+                                                                                                                                        kubectl apply -f k8s-service.yaml
 
