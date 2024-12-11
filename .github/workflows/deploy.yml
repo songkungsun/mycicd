@@ -7,7 +7,8 @@ on:
 
           jobs:
               deploy:
-                    runs-on: ubuntu-latest
+                    runs-on: ubuntu-latest  # 기본 환경은 우분투로 두고, 도커 이미지를 실행하도록 설정
+                          
                           steps:
                                 - name: Checkout code
                                         uses: actions/checkout@v2
@@ -22,8 +23,10 @@ on:
                                                                                               with:
                                                                                                         kubeconfig: ${{ secrets.GCP_SA_KEY }}
 
-                                                                                                              - name: Deploy to Kubernetes
-                                                                                                                      run: |
-                                                                                                                                kubectl apply -f k8s-deployment.yaml
-                                                                                                                                        kubectl apply -f k8s-service.yaml
+                                                                                                              - name: Use custom Docker image
+                                                                                                                      uses: docker://thdrudtjssla/brick-blockgame:latest  # 사용자 Docker 이미지 사용
+                                                                                                                              with:
+                                                                                                                                        args: |
+                                                                                                                                                    kubectl apply -f k8s-deployment.yaml
+                                                                                                                                                              kubectl apply -f k8s-service.yaml
 
