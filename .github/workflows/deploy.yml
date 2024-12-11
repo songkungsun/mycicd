@@ -18,14 +18,12 @@ jobs:
       with:
         credentials_json: ${{ secrets.GCP_SA_KEY }}
 
-    - name: Install kubectl
+    - name: Run Google Cloud SDK image with kubectl
       run: |
-        curl -LO https://storage.googleapis.com/kubernetes-release/release/$(curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt)/bin/linux/amd64/kubectl
-        chmod +x ./kubectl
-        sudo mv ./kubectl /usr/local/bin/kubectl
-
-    - name: Run custom Docker image with kubectl
-      run: |
-        docker run --rm -v $(pwd):/workspace -w /workspace -e KUBECONFIG=$HOME/.kube/config thdrudtjssla/brick-blockgame:latest kubectl apply -f k8s-deployment.yaml
-        docker run --rm -v $(pwd):/workspace -w /workspace -e KUBECONFIG=$HOME/.kube/config thdrudtjssla/brick-blockgame:latest kubectl apply -f k8s-service.yaml
+        # GCP 클러스터 인증
+        docker run --rm -v $(pwd):/workspace -w /workspace -e KUBECONFIG=$HOME/.kube/config google/cloud-sdk:slim gcloud container clusters get-credentials mywebtest --zone asia-northeast1 --project ${{ secrets.GCP_PROJECT_ID }}
+        
+        # kubectl로 배포 적용
+        docker run --rm -v $(pwd):/workspace -w /workspace -e KUBECONFIG=$HOME/.kube/config google/cloud-sdk:slim kubectl apply -f k8s-deployment.yaml
+        docker run --rm -v $(pwd):/workspace -w /workspace -e KUBECONFIG=$HOME/.kube/config google/cloud-sdk:slim kubectl apply -f k8s-service.yaml
 
