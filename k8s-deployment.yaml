@@ -1,0 +1,20 @@
+piVersion: apps/v1
+kind: Deployment
+metadata:
+    name: brick-blockgame
+    spec:
+        replicas: 2
+            selector:
+                  matchLabels:
+                          app: brick-blockgame
+                              template:
+                                    metadata:
+                                            labels:
+                                                      app: brick-blockgame
+                                                            spec:
+                                                                    containers:
+                                                                            - name: brick-blockgame
+                                                                                      image: thdrudtjssla/brick-blockgame:latest  # Docker Hub 이미지
+                                                                                                ports:
+                                                                                                          - containerPort: 80
+
